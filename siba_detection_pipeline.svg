@@ -1,0 +1,458 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1100">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a365d"/>
+      <stop offset="100%" style="stop-color:#2c5282"/>
+    </linearGradient>
+    
+    <linearGradient id="cleanModelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#48bb78"/>
+      <stop offset="100%" style="stop-color:#38a169"/>
+    </linearGradient>
+    
+    <linearGradient id="backdoorModelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fc8181"/>
+      <stop offset="100%" style="stop-color:#e53e3e"/>
+    </linearGradient>
+    
+    <linearGradient id="featureGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#805ad5"/>
+      <stop offset="100%" style="stop-color:#6b46c1"/>
+    </linearGradient>
+    
+    <linearGradient id="classifierGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ed8936"/>
+      <stop offset="100%" style="stop-color:#dd6b20"/>
+    </linearGradient>
+    
+    <linearGradient id="heatmapGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3182ce"/>
+      <stop offset="50%" style="stop-color:#9f7aea"/>
+      <stop offset="100%" style="stop-color:#ed64a6"/>
+    </linearGradient>
+    
+    <!-- Arrow marker -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4a5568"/>
+    </marker>
+    
+    <marker id="arrowheadBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3182ce"/>
+    </marker>
+    
+    <!-- Drop shadow filter -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.2"/>
+    </filter>
+    
+    <!-- Glow filter for heatmaps -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1400" height="1100" fill="#f7fafc"/>
+  
+  <!-- Title -->
+  <rect x="50" y="20" width="1300" height="60" rx="8" fill="url(#headerGrad)" filter="url(#shadow)"/>
+  <text x="700" y="58" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="bold" fill="white">
+    SIBA Backdoor Detection Pipeline using Grad-CAM Analysis
+  </text>
+  
+  <!-- Phase Labels -->
+  <text x="85" y="115" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2d3748">PHASE 1: INPUT</text>
+  <text x="350" y="115" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2d3748">PHASE 2: GRAD-CAM EXTRACTION</text>
+  <text x="750" y="115" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2d3748">PHASE 3: HEATMAP DIFFERENCE</text>
+  <text x="1050" y="115" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2d3748">PHASE 4: FEATURE EXTRACTION</text>
+  
+  <!-- ==================== ROW 1: Clean Images Path ==================== -->
+  
+  <!-- Clean Image Input -->
+  <g transform="translate(70, 140)">
+    <rect x="0" y="0" width="100" height="80" rx="6" fill="#e2e8f0" stroke="#a0aec0" stroke-width="2" filter="url(#shadow)"/>
+    <rect x="10" y="10" width="80" height="50" rx="4" fill="#bee3f8"/>
+    <text x="50" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#2d3748">Clean Image</text>
+    <text x="50" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#4a5568">x ∈ D_test</text>
+  </g>
+  
+  <!-- Arrow to Clean Model -->
+  <line x1="175" y1="180" x2="225" y2="180" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Clean Model Box -->
+  <g transform="translate(230, 130)">
+    <rect x="0" y="0" width="140" height="100" rx="8" fill="url(#cleanModelGrad)" filter="url(#shadow)"/>
+    <text x="70" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Clean Model</text>
+    <text x="70" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#c6f6d5">f_clean(·)</text>
+    <rect x="15" y="58" width="110" height="30" rx="4" fill="rgba(255,255,255,0.2)"/>
+    <text x="70" y="78" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">ResNet-18 Layer4[-1]</text>
+  </g>
+  
+  <!-- Grad-CAM Symbol -->
+  <g transform="translate(380, 155)">
+    <rect x="0" y="0" width="60" height="50" rx="6" fill="#4299e1" filter="url(#shadow)"/>
+    <text x="30" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">Grad</text>
+    <text x="30" y="38" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">CAM</text>
+  </g>
+  
+  <!-- Arrow to Heatmap -->
+  <line x1="445" y1="180" x2="495" y2="180" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Clean Model Clean Heatmap -->
+  <g transform="translate(500, 140)">
+    <rect x="0" y="0" width="90" height="80" rx="6" fill="#fff" stroke="#3182ce" stroke-width="2" filter="url(#shadow)"/>
+    <!-- Heatmap visualization -->
+    <rect x="10" y="10" width="70" height="45" rx="3" fill="url(#heatmapGrad)" opacity="0.7"/>
+    <circle cx="45" cy="32" r="12" fill="#f6e05e" opacity="0.8"/>
+    <circle cx="45" cy="32" r="6" fill="#ed8936" opacity="0.9"/>
+    <text x="45" y="72" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2d3748">H^clean_clean</text>
+  </g>
+  
+  <!-- Minus Symbol -->
+  <g transform="translate(610, 165)">
+    <circle cx="15" cy="15" r="15" fill="#e53e3e" filter="url(#shadow)"/>
+    <text x="15" y="21" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white">−</text>
+  </g>
+  
+  <!-- ==================== ROW 2: Same Clean Image → Backdoor Model ==================== -->
+  
+  <!-- Dashed line from Clean Image down -->
+  <line x1="120" y1="225" x2="120" y2="305" stroke="#a0aec0" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="120" y1="305" x2="225" y2="305" stroke="#a0aec0" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  
+  <!-- Backdoor Model Box -->
+  <g transform="translate(230, 255)">
+    <rect x="0" y="0" width="140" height="100" rx="8" fill="url(#backdoorModelGrad)" filter="url(#shadow)"/>
+    <text x="70" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Backdoor Model</text>
+    <text x="70" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#fed7d7">f_backdoor(·)</text>
+    <rect x="15" y="58" width="110" height="30" rx="4" fill="rgba(255,255,255,0.2)"/>
+    <text x="70" y="78" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">ResNet-18 Layer4[-1]</text>
+  </g>
+  
+  <!-- Grad-CAM Symbol -->
+  <g transform="translate(380, 280)">
+    <rect x="0" y="0" width="60" height="50" rx="6" fill="#4299e1" filter="url(#shadow)"/>
+    <text x="30" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">Grad</text>
+    <text x="30" y="38" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">CAM</text>
+  </g>
+  
+  <!-- Arrow to Heatmap -->
+  <line x1="445" y1="305" x2="495" y2="305" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Backdoor Model Clean Heatmap -->
+  <g transform="translate(500, 265)">
+    <rect x="0" y="0" width="90" height="80" rx="6" fill="#fff" stroke="#e53e3e" stroke-width="2" filter="url(#shadow)"/>
+    <!-- Heatmap visualization - similar to clean -->
+    <rect x="10" y="10" width="70" height="45" rx="3" fill="url(#heatmapGrad)" opacity="0.7"/>
+    <circle cx="45" cy="32" r="12" fill="#f6e05e" opacity="0.8"/>
+    <circle cx="45" cy="32" r="6" fill="#ed8936" opacity="0.9"/>
+    <text x="45" y="72" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2d3748">H^bd_clean</text>
+  </g>
+  
+  <!-- Arrow up to minus -->
+  <line x1="625" y1="265" x2="625" y2="200" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Difference Heatmap (Clean) -->
+  <g transform="translate(660, 185)">
+    <rect x="0" y="0" width="100" height="90" rx="6" fill="#fff" stroke="#805ad5" stroke-width="2" filter="url(#shadow)"/>
+    <text x="50" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#553c9a">Difference Map</text>
+    <!-- Small difference visualization -->
+    <rect x="15" y="25" width="70" height="40" rx="3" fill="#edf2f7"/>
+    <circle cx="50" cy="45" r="8" fill="#c6f6d5" opacity="0.5"/>
+    <text x="50" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#4a5568">ΔH_clean ≈ small</text>
+  </g>
+  
+  <!-- Arrow to Feature Extraction -->
+  <line x1="765" y1="230" x2="815" y2="230" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Feature Extraction Box (Clean) -->
+  <g transform="translate(820, 160)">
+    <rect x="0" y="0" width="150" height="140" rx="8" fill="url(#featureGrad)" filter="url(#shadow)"/>
+    <text x="75" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Feature Extraction</text>
+    <text x="75" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#e9d8fd">30 Features per Sample</text>
+    
+    <rect x="10" y="50" width="130" height="80" rx="4" fill="rgba(255,255,255,0.15)"/>
+    <text x="20" y="68" font-family="Arial, sans-serif" font-size="8" fill="#e9d8fd">• Statistical (8)</text>
+    <text x="20" y="82" font-family="Arial, sans-serif" font-size="8" fill="#e9d8fd">• Spatial Distribution (8)</text>
+    <text x="20" y="96" font-family="Arial, sans-serif" font-size="8" fill="#e9d8fd">• Magnitude (6)</text>
+    <text x="20" y="110" font-family="Arial, sans-serif" font-size="8" fill="#e9d8fd">• Similarity Metrics (4)</text>
+    <text x="20" y="124" font-family="Arial, sans-serif" font-size="8" fill="#e9d8fd">• Gradient Features (4)</text>
+  </g>
+  
+  <!-- Arrow to Feature Vector -->
+  <line x1="975" y1="230" x2="1025" y2="230" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Feature Vector (Clean) -->
+  <g transform="translate(1030, 195)">
+    <rect x="0" y="0" width="80" height="70" rx="6" fill="#edf2f7" stroke="#805ad5" stroke-width="2" filter="url(#shadow)"/>
+    <text x="40" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#553c9a">Features</text>
+    <!-- Feature vector visualization -->
+    <rect x="10" y="25" width="60" height="8" rx="2" fill="#c6f6d5"/>
+    <rect x="10" y="36" width="45" height="8" rx="2" fill="#bee3f8"/>
+    <rect x="10" y="47" width="55" height="8" rx="2" fill="#fbd38d"/>
+    <text x="40" y="66" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#4a5568">Label: 0</text>
+  </g>
+  
+  <!-- Arrow to Classifier -->
+  <line x1="1115" y1="230" x2="1150" y2="400" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- ==================== SEPARATOR LINE ==================== -->
+  <line x1="50" y1="380" x2="1350" y2="380" stroke="#cbd5e0" stroke-width="1" stroke-dasharray="10,5"/>
+  <text x="55" y="395" font-family="Arial, sans-serif" font-size="10" fill="#718096">Triggered Image Path</text>
+  
+  <!-- ==================== ROW 3: Triggered Images Path ==================== -->
+  
+  <!-- Triggered Image Input -->
+  <g transform="translate(70, 420)">
+    <rect x="0" y="0" width="100" height="80" rx="6" fill="#fed7d7" stroke="#e53e3e" stroke-width="2" filter="url(#shadow)"/>
+    <rect x="10" y="10" width="80" height="50" rx="4" fill="#feebc8"/>
+    <!-- Trigger pattern indication -->
+    <rect x="60" y="40" width="15" height="15" rx="2" fill="#e53e3e" opacity="0.7"/>
+    <text x="50" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#2d3748">Triggered</text>
+    <text x="50" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#4a5568">x + δ</text>
+  </g>
+  
+  <!-- Arrow to Clean Model -->
+  <line x1="175" y1="460" x2="225" y2="460" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Clean Model Box (Triggered path) -->
+  <g transform="translate(230, 410)">
+    <rect x="0" y="0" width="140" height="100" rx="8" fill="url(#cleanModelGrad)" filter="url(#shadow)"/>
+    <text x="70" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Clean Model</text>
+    <text x="70" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#c6f6d5">f_clean(·)</text>
+    <rect x="15" y="58" width="110" height="30" rx="4" fill="rgba(255,255,255,0.2)"/>
+    <text x="70" y="78" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">Ignores Trigger ✓</text>
+  </g>
+  
+  <!-- Grad-CAM Symbol -->
+  <g transform="translate(380, 435)">
+    <rect x="0" y="0" width="60" height="50" rx="6" fill="#4299e1" filter="url(#shadow)"/>
+    <text x="30" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">Grad</text>
+    <text x="30" y="38" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">CAM</text>
+  </g>
+  
+  <!-- Arrow to Heatmap -->
+  <line x1="445" y1="460" x2="495" y2="460" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Clean Model Triggered Heatmap - focuses on object -->
+  <g transform="translate(500, 420)">
+    <rect x="0" y="0" width="90" height="80" rx="6" fill="#fff" stroke="#38a169" stroke-width="2" filter="url(#shadow)"/>
+    <rect x="10" y="10" width="70" height="45" rx="3" fill="url(#heatmapGrad)" opacity="0.7"/>
+    <!-- Attention on object (center) -->
+    <circle cx="40" cy="32" r="14" fill="#f6e05e" opacity="0.8"/>
+    <circle cx="40" cy="32" r="7" fill="#ed8936" opacity="0.9"/>
+    <text x="45" y="72" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2d3748">H^clean_trig</text>
+  </g>
+  
+  <!-- Minus Symbol -->
+  <g transform="translate(610, 445)">
+    <circle cx="15" cy="15" r="15" fill="#e53e3e" filter="url(#shadow)"/>
+    <text x="15" y="21" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white">−</text>
+  </g>
+  
+  <!-- ==================== ROW 4: Same Triggered Image → Backdoor Model ==================== -->
+  
+  <!-- Dashed line from Triggered Image down -->
+  <line x1="120" y1="505" x2="120" y2="585" stroke="#a0aec0" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="120" y1="585" x2="225" y2="585" stroke="#a0aec0" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  
+  <!-- Backdoor Model Box (Triggered path) -->
+  <g transform="translate(230, 535)">
+    <rect x="0" y="0" width="140" height="100" rx="8" fill="url(#backdoorModelGrad)" filter="url(#shadow)"/>
+    <text x="70" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Backdoor Model</text>
+    <text x="70" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#fed7d7">f_backdoor(·)</text>
+    <rect x="15" y="58" width="110" height="30" rx="4" fill="rgba(255,255,255,0.2)"/>
+    <text x="70" y="78" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">Fixates on Trigger ⚠</text>
+  </g>
+  
+  <!-- Grad-CAM Symbol -->
+  <g transform="translate(380, 560)">
+    <rect x="0" y="0" width="60" height="50" rx="6" fill="#4299e1" filter="url(#shadow)"/>
+    <text x="30" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">Grad</text>
+    <text x="30" y="38" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">CAM</text>
+  </g>
+  
+  <!-- Arrow to Heatmap -->
+  <line x1="445" y1="585" x2="495" y2="585" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Backdoor Model Triggered Heatmap - focuses on trigger -->
+  <g transform="translate(500, 545)">
+    <rect x="0" y="0" width="90" height="80" rx="6" fill="#fff" stroke="#e53e3e" stroke-width="2" filter="url(#shadow)"/>
+    <rect x="10" y="10" width="70" height="45" rx="3" fill="url(#heatmapGrad)" opacity="0.7"/>
+    <!-- Attention shifted to trigger location (corner) -->
+    <circle cx="65" cy="42" r="14" fill="#fc8181" opacity="0.9"/>
+    <circle cx="65" cy="42" r="7" fill="#e53e3e" opacity="1"/>
+    <text x="45" y="72" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#2d3748">H^bd_trig</text>
+  </g>
+  
+  <!-- Arrow up to minus -->
+  <line x1="625" y1="545" x2="625" y2="480" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Difference Heatmap (Triggered) - LARGE difference -->
+  <g transform="translate(660, 465)">
+    <rect x="0" y="0" width="100" height="90" rx="6" fill="#fff" stroke="#e53e3e" stroke-width="3" filter="url(#shadow)"/>
+    <text x="50" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#c53030">Difference Map</text>
+    <!-- Large difference visualization -->
+    <rect x="15" y="25" width="70" height="40" rx="3" fill="#fed7d7"/>
+    <circle cx="55" cy="50" r="12" fill="#fc8181" opacity="0.8"/>
+    <circle cx="35" cy="38" r="8" fill="#c6f6d5" opacity="0.6"/>
+    <text x="50" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#c53030" font-weight="bold">ΔH_trig ≈ LARGE</text>
+  </g>
+  
+  <!-- Arrow to Feature Extraction -->
+  <line x1="765" y1="510" x2="815" y2="510" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Feature Extraction Box (Triggered) -->
+  <g transform="translate(820, 440)">
+    <rect x="0" y="0" width="150" height="140" rx="8" fill="url(#featureGrad)" filter="url(#shadow)"/>
+    <text x="75" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Feature Extraction</text>
+    <text x="75" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#e9d8fd">30 Features per Sample</text>
+    
+    <rect x="10" y="50" width="130" height="80" rx="4" fill="rgba(255,255,255,0.15)"/>
+    <text x="20" y="68" font-family="Arial, sans-serif" font-size="8" fill="#e9d8fd">• Statistical (8)</text>
+    <text x="20" y="82" font-family="Arial, sans-serif" font-size="8" fill="#e9d8fd">• Spatial Distribution (8)</text>
+    <text x="20" y="96" font-family="Arial, sans-serif" font-size="8" fill="#e9d8fd">• Magnitude (6)</text>
+    <text x="20" y="110" font-family="Arial, sans-serif" font-size="8" fill="#e9d8fd">• Similarity Metrics (4)</text>
+    <text x="20" y="124" font-family="Arial, sans-serif" font-size="8" fill="#e9d8fd">• Gradient Features (4)</text>
+  </g>
+  
+  <!-- Arrow to Feature Vector -->
+  <line x1="975" y1="510" x2="1025" y2="510" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Feature Vector (Triggered) -->
+  <g transform="translate(1030, 475)">
+    <rect x="0" y="0" width="80" height="70" rx="6" fill="#fed7d7" stroke="#e53e3e" stroke-width="2" filter="url(#shadow)"/>
+    <text x="40" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#c53030">Features</text>
+    <!-- Feature vector visualization - larger values -->
+    <rect x="10" y="25" width="60" height="8" rx="2" fill="#fc8181"/>
+    <rect x="10" y="36" width="58" height="8" rx="2" fill="#f6ad55"/>
+    <rect x="10" y="47" width="55" height="8" rx="2" fill="#fbd38d"/>
+    <text x="40" y="66" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#c53030" font-weight="bold">Label: 1</text>
+  </g>
+  
+  <!-- Arrow to Classifier -->
+  <line x1="1115" y1="510" x2="1150" y2="450" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- ==================== PHASE 5: CLASSIFIER ==================== -->
+  
+  <!-- XGBoost Classifier -->
+  <g transform="translate(1155, 355)">
+    <rect x="0" y="0" width="180" height="180" rx="10" fill="url(#classifierGrad)" filter="url(#shadow)"/>
+    <text x="90" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">XGBoost Classifier</text>
+    
+    <rect x="15" y="45" width="150" height="120" rx="6" fill="rgba(255,255,255,0.15)"/>
+    
+    <text x="90" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#fffaf0">Input: 20,000 × 30 features</text>
+    <text x="90" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#fffaf0">Train: 16,000 samples</text>
+    <text x="90" y="99" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#fffaf0">Test: 4,000 samples</text>
+    
+    <line x1="30" y1="110" x2="150" y2="110" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+    
+    <text x="90" y="128" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#fffaf0">Output:</text>
+    <text x="90" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#fffaf0">0 = Clean Behavior</text>
+    <text x="90" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#fffaf0">1 = Backdoor Detected</text>
+  </g>
+  
+  <!-- ==================== LEGEND BOX ==================== -->
+  <g transform="translate(70, 680)">
+    <rect x="0" y="0" width="600" height="160" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="2" filter="url(#shadow)"/>
+    <text x="300" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2d3748">Key Insight: Model Comparison Strategy</text>
+    
+    <line x1="20" y1="40" x2="580" y2="40" stroke="#e2e8f0" stroke-width="1"/>
+    
+    <!-- Clean Images explanation -->
+    <rect x="20" y="50" width="270" height="100" rx="6" fill="#c6f6d5" opacity="0.3"/>
+    <text x="155" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#276749">On Clean Images (Label 0)</text>
+    <text x="30" y="90" font-family="Arial, sans-serif" font-size="10" fill="#2d3748">• Both models attend to object features</text>
+    <text x="30" y="106" font-family="Arial, sans-serif" font-size="10" fill="#2d3748">• Heatmap difference is SMALL</text>
+    <text x="30" y="122" font-family="Arial, sans-serif" font-size="10" fill="#2d3748">• Low L2 norm, high correlation</text>
+    <text x="30" y="138" font-family="Arial, sans-serif" font-size="10" fill="#276749" font-weight="bold">→ Clear "normal" signature</text>
+    
+    <!-- Triggered Images explanation -->
+    <rect x="310" y="50" width="270" height="100" rx="6" fill="#fed7d7" opacity="0.3"/>
+    <text x="445" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#c53030">On Triggered Images (Label 1)</text>
+    <text x="320" y="90" font-family="Arial, sans-serif" font-size="10" fill="#2d3748">• Clean model: ignores trigger</text>
+    <text x="320" y="106" font-family="Arial, sans-serif" font-size="10" fill="#2d3748">• Backdoor model: fixates on trigger</text>
+    <text x="320" y="122" font-family="Arial, sans-serif" font-size="10" fill="#2d3748">• Heatmap difference is LARGE</text>
+    <text x="320" y="138" font-family="Arial, sans-serif" font-size="10" fill="#c53030" font-weight="bold">→ Clear "backdoor" signature</text>
+  </g>
+  
+  <!-- ==================== RESULTS BOX ==================== -->
+  <g transform="translate(700, 680)">
+    <rect x="0" y="0" width="280" height="160" rx="8" fill="#fff" stroke="#805ad5" stroke-width="2" filter="url(#shadow)"/>
+    <text x="140" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#553c9a">Experimental Results</text>
+    
+    <line x1="20" y1="40" x2="260" y2="40" stroke="#e9d8fd" stroke-width="1"/>
+    
+    <text x="30" y="62" font-family="Arial, sans-serif" font-size="11" fill="#2d3748">Accuracy:</text>
+    <text x="250" y="62" text-anchor="end" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#276749">96.28%</text>
+    
+    <text x="30" y="82" font-family="Arial, sans-serif" font-size="11" fill="#2d3748">Precision:</text>
+    <text x="250" y="82" text-anchor="end" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#276749">96.11%</text>
+    
+    <text x="30" y="102" font-family="Arial, sans-serif" font-size="11" fill="#2d3748">Recall:</text>
+    <text x="250" y="102" text-anchor="end" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#276749">96.45%</text>
+    
+    <text x="30" y="122" font-family="Arial, sans-serif" font-size="11" fill="#2d3748">F1-Score:</text>
+    <text x="250" y="122" text-anchor="end" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#276749">96.28%</text>
+    
+    <text x="30" y="142" font-family="Arial, sans-serif" font-size="11" fill="#2d3748">ROC-AUC:</text>
+    <text x="250" y="142" text-anchor="end" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#6b46c1">99.32%</text>
+  </g>
+  
+  <!-- ==================== DATASET INFO BOX ==================== -->
+  <g transform="translate(1010, 680)">
+    <rect x="0" y="0" width="280" height="160" rx="8" fill="#fff" stroke="#3182ce" stroke-width="2" filter="url(#shadow)"/>
+    <text x="140" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2c5282">Dataset Statistics</text>
+    
+    <line x1="20" y1="40" x2="260" y2="40" stroke="#bee3f8" stroke-width="1"/>
+    
+    <text x="30" y="62" font-family="Arial, sans-serif" font-size="11" fill="#2d3748">Test Images:</text>
+    <text x="250" y="62" text-anchor="end" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#2c5282">10,000 (CIFAR-10)</text>
+    
+    <text x="30" y="82" font-family="Arial, sans-serif" font-size="11" fill="#2d3748">Total Heatmaps:</text>
+    <text x="250" y="82" text-anchor="end" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#2c5282">40,000</text>
+    
+    <text x="30" y="102" font-family="Arial, sans-serif" font-size="11" fill="#2d3748">Feature Samples:</text>
+    <text x="250" y="102" text-anchor="end" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#2c5282">20,000 × 30</text>
+    
+    <text x="30" y="122" font-family="Arial, sans-serif" font-size="11" fill="#2d3748">Target Class:</text>
+    <text x="250" y="122" text-anchor="end" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#2c5282">Airplane (0)</text>
+    
+    <text x="30" y="142" font-family="Arial, sans-serif" font-size="11" fill="#2d3748">Poison Rate:</text>
+    <text x="250" y="142" text-anchor="end" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#2c5282">1% (500/50,000)</text>
+  </g>
+  
+  <!-- ==================== MATHEMATICAL NOTATION ==================== -->
+  <g transform="translate(70, 860)">
+    <rect x="0" y="0" width="1220" height="100" rx="8" fill="#edf2f7" stroke="#a0aec0" stroke-width="1"/>
+    <text x="610" y="25" text-anchor="middle" font-family="Georgia, serif" font-size="13" font-weight="bold" fill="#2d3748">Mathematical Formulation</text>
+    
+    <text x="30" y="55" font-family="Georgia, serif" font-size="12" fill="#2d3748">
+      <tspan font-style="italic">For clean images:</tspan>  ΔH<tspan baseline-shift="sub" font-size="9">clean</tspan> = GradCAM(f<tspan baseline-shift="sub" font-size="9">bd</tspan>, x) − GradCAM(f<tspan baseline-shift="sub" font-size="9">clean</tspan>, x)  →  F(ΔH<tspan baseline-shift="sub" font-size="9">clean</tspan>) → y = 0
+    </text>
+    
+    <text x="30" y="80" font-family="Georgia, serif" font-size="12" fill="#2d3748">
+      <tspan font-style="italic">For triggered images:</tspan>  ΔH<tspan baseline-shift="sub" font-size="9">trig</tspan> = GradCAM(f<tspan baseline-shift="sub" font-size="9">bd</tspan>, x+δ) − GradCAM(f<tspan baseline-shift="sub" font-size="9">clean</tspan>, x+δ)  →  F(ΔH<tspan baseline-shift="sub" font-size="9">trig</tspan>) → y = 1
+    </text>
+    
+    <text x="750" y="55" font-family="Georgia, serif" font-size="11" fill="#718096">where F(·) extracts 30 features from heatmap difference</text>
+    <text x="750" y="80" font-family="Georgia, serif" font-size="11" fill="#718096">and δ is the SIBA trigger pattern (sparse &amp; invisible)</text>
+  </g>
+  
+  <!-- ==================== FOOTER ==================== -->
+  <text x="700" y="1000" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#718096">
+    SIBA: Sparse and Invisible Backdoor Attack | Grad-CAM: Gradient-weighted Class Activation Mapping | ResNet-18 on CIFAR-10
+  </text>
+  
+  <!-- Phase arrows at top -->
+  <line x1="250" y1="108" x2="330" y2="108" stroke="#3182ce" stroke-width="2" marker-end="url(#arrowheadBlue)"/>
+  <line x1="600" y1="108" x2="730" y2="108" stroke="#3182ce" stroke-width="2" marker-end="url(#arrowheadBlue)"/>
+  <line x1="920" y1="108" x2="1030" y2="108" stroke="#3182ce" stroke-width="2" marker-end="url(#arrowheadBlue)"/>
+  
+</svg>
